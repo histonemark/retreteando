@@ -1,0 +1,188 @@
+#+TITLE: Using Emacs Orgmode as a Lab Notebook
+#+AUTHOR: Marc Corrales Berjano
+
+- There is an somewhat functional version for VIM
+- There is emulation of vim in EMACS (eVIl-mode) people seem quite happy with it.
+
+* Example 1 A typical day at the bench.
+Purpose :: The experiment that we are going to do is to know if the geeky gene (GG1)
+is *overexpressed* in the memebers of this lab.
+
+** DONE Order Oligos
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2016-12-06 mar 17:37]
+:END:
+- I ordered the oligos for the geeky gene 1 (GG1)
+  - Fwd: GATGGGTACTGGTACAGT
+  - Rev: TTTACGAGTCGTACGGA
+    
+** TODO Obtain piece of tissue of the members of the lab
+- I use scisors and formol as explained in [[file:PNAS-1962-Gross-1014-22.pdf][This new article]]
+- The desired culture of the tissues should look like: (C-u C-c C-x C-v)
+  
+[[file:disgusting.png]]
+
+| Member | weigth (g) |
+|--------+------------|
+| HC     |        2.1 |
+| AR     |        2.8 |
+| RC     |        3.2 |
+| EV     |        3.4 |
+| PC     |        4.2 |
+| MC     |        3.8 |
+| CR     |        2.8 |
+| AT     |        3.2 |
+| ET     |        3.5 |
+
+
+
+- Guillaume wanna participate or be the postive control?
+- Good education: Put yourself last Marc!
+** DONE Obtain negative controls 
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2016-12-06 mar 15:57]
+:END:
+- I obtain tissue from the people that are araund the lab. Simple random
+sample with a little convenience bias. 
+ 
+| People    | Weigth (g) |
+|-----------+------------|
+| TianTian  |        2.5 |
+| Marc LC   |        3.1 |
+| Alexandra |        2.8 |
+|-----------+------------|
+
+The negative controls are the FIRST step!!! 
+** TODO Facs non fatty cells
+DEADLINE: <2016-12-13 mar> Apointment with facility.
+- Disgregate the tissue with collagenase 37C 15 min. 
+- Incubate cells with antibody Fairy (rcognices the receptor of Adipocites). 1h
+in agitation.
+- Bring to the facility
+
+** TODO Extract DNA
+- I extract the DNA from each sample from FACS with Qiagen Blood and tissue Kit
+following their recomendations. ref? 
+- I resuspend in 40 ul EB
+
+| Member | conc (ng/ul) | Total |
+|--------+--------------+-------|
+| HC     |         20.1 |       |
+| AR     |         20.8 |       |
+| RC     |         30.2 |       |
+| EV     |         30.4 |       |
+| PC     |         40.2 |       |
+| MC     |         30.8 |       |
+| CR     |         20.8 |       |
+| AT     |         30.2 |       |
+| ET     |         30.5 |       |
+|--------+--------------+-------|
+#+TBLFM: 
+
+- Total DNA ? 
+** TODO PCR 
+- Print it to carry to the bench.
+
+| Component | Amount per 100 ul | 100 PCRs |
+|-----------+-------------------+----------|
+| Bfr 5X    |                20 | 2 mL     |
+| dNTPs     |                 2 | 200 ul   |
+| Primers   |                50 | -        |
+| gDNA      |              4 ul | 400 ul   |
+| Phusion   |              1 ul | 100 ul   |
+| H20       |                23 | 2.2 mL   |
+|-----------+-------------------+----------|
+|           |     Total  100 ul |          |
+
+** TODO Run Gel
+- The Gel shows that the gene has amplified 7 people. I made the
+quantification with geekQuant.(Of course I havent used a loading control,
+because I am a cowboy).
+
+[[file:gel.jpg]]
+
+#+TBLNAME: geektbl
+| Num | Name      | rel_exp |
+|-----+-----------+---------|
+|   1 | Guillaume |     4.1 |
+|   2 | Arantxa   |     3.8 |
+|   3 | Eduard    |     3.4 |
+|   4 | Pol       |     3.0 |
+|   5 | Albert    |     3.0 |
+|   6 | HC        |     2.8 |
+|   7 | Tiantian  |     0.0 |
+
+** TODO Make Figure
+
+- Lets make a barplot with the results
+#+BEGIN_SRC R :results output graphics :var geek=geektbl :file geektbl.png :exports both
+barplot(geek$rel_exp,names.arg=geek$Name,las=3, col=rainbow(20))
+#+END_SRC
+
+#+RESULTS:
+[[file:geektbl.png]]
+
+** TODO Save a pdf copy
+Backups are important!!!
+C-c C-e ...
+[[file:orgnotebook.pdf][Link to the pdf]]
+* Example 2 A typical day at the computer 
+- I will make an exaple for someone doing data analysis since I dont know which
+are the advantages to 'real developping'.
+
+** TODO Start a new Docker container 
+** TODO Start to track the project in git
+- Magit
+** TODO Get the data  
+- Lets download the data from GEO. 
+#+BEGIN_SRC sh 
+wget https://dl.dropboxusercontent.com/u/3975383/Drosophila_25_cell_lines.txt
+ls | grep '^Drosophila'
+#+END_SRC
+
+#+RESULTS:
+: Drosophila_25_cell_lines.txt
+
+** TODO Clean and prepare the Data
+
+- How does the data look like
+#+BEGIN_SRC sh
+head Drosophila_25_cell_lines.txt
+#+END_SRC
+
+#+RESULTS:
+| Gene_FBgn   | ANNOTATION_SYMBOL | NAME                         | SYMBOL | Chromosome |   L1 |  Sg4 |  D11 | D20-c2 | D20-c5 | Kc167 |   GM2 | S2-DRSC |  S2R+ | S1 1182-4H | D16-c3 |  D32 | D17-c3 |    D8 | Cl.8 |    D9 | BG1-c1 |   D21 | D4-c1 | BG3-c2 |   S3 |    W2 |  mbn2 | BG2-c2 | BG3c2_RPKM | Cl.8_RPKM | Kc167_RPKM | S2-DRSC_RPKM |      |
+| FBgn0000003 | CR32864           | RNA 7SL                      | 7SLRNA | chr3R      | 2865 |  766 | 1081 |   2554 |   6007 | 28853 | 15965 |   19318 | 40438 |      12516 |  11627 | 6284 |  21483 | 16001 |   86 | 28398 |   9037 | 19780 | 18895 |   6302 |    0 | 11805 | 11449 |   8065 |       7327 |         0 |          0 |            0 |    0 |
+| FBgn0000008 | CG6741            | arc                          | a      | chr2R      |  207 |  131 |  349 |    246 |    370 |   292 |   103 |     179 |   128 |        200 |    343 |  239 |    211 |   164 |  519 |   336 |    110 |   397 |   303 |    210 |  180 |    57 |   140 |    149 |        204 |       2.3 |        4.5 |          3.2 |    2 |
+| FBgn0000014 | CG10325           | abdominal A                  | abd-A  | chr3R      |  176 |   91 |   90 |    143 |    114 |    89 |    43 |      87 |   144 |         92 |     37 |   54 |    106 |   115 |   32 |    55 |     76 |   271 |   101 |    112 |   64 |   223 |    57 |     26 |         88 |         0 |          0 |            0 |  0.2 |
+| FBgn0000015 | CG11648           | Abdominal B                  | Abd-B  | chr3R      |  645 | 1172 |  101 |     95 |     86 |    99 |    62 |      67 |   111 |         45 |    117 |   76 |     57 |    89 |  117 |   120 |     69 |   104 |    79 |     28 |   60 |  1709 |    41 |     48 |         54 |       0.2 |        0.1 |            0 |  0.3 |
+| FBgn0000017 | CG4032            | Abl tyrosine kinase          | Abl    | chr3L      | 2076 | 1216 | 1315 |   1402 |   2413 |  1184 |  2013 |    1583 |  2253 |       1758 |   1802 | 1252 |   3079 |  1169 | 2281 |  1487 |   3399 |  1036 |  4081 |   1864 | 2052 |  1026 |  1791 |   1308 |        899 |      45.3 |       75.8 |         36.3 | 67.9 |
+| FBgn0000018 | CG6093            | abnormal oocyte              | abo    | chr2L      |  166 |  264 |  244 |    313 |    266 |   213 |   208 |     305 |   364 |        269 |    233 |  163 |    175 |   158 |  184 |   191 |    230 |   330 |   235 |    267 |  178 |   172 |   236 |    490 |        198 |       7.8 |       14.8 |         17.7 | 18.7 |
+| FBgn0000022 | CG3796            | achaete                      | ac     | chrX       |    1 |    0 |    6 |      0 |      8 |    27 |     5 |      27 |    31 |          0 |    352 |   49 |     25 |     0 |   20 |     0 |      0 |    59 |    30 |      3 |   40 |     4 |     0 |      7 |          0 |         0 |          0 |          0.1 |    0 |
+| FBgn0000024 | CG17907           | Acetylcholine esterase       | Ace    | chr3R      | 2471 |  714 | 2119 |   2049 |    753 |   106 |   547 |    1404 |    84 |         96 |    223 |  394 |   1984 |   196 |  836 |   321 |    149 |    32 |   431 |   1530 |  801 |  2478 |    57 |     56 |         56 |         0 |        0.9 |          1.5 |  0.4 |
+| FBgn0000028 | CG9151            | abnormal chemosensory jump 6 | acj6   | chrX       |   84 |  111 |  171 |    146 |    146 |   187 |    83 |     122 |   253 |         96 |     92 |  115 |    132 |    89 |  109 |   332 |    196 |   144 |   131 |     76 |  169 |    98 |   184 |    112 |        204 |         0 |          0 |          0.6 |  0.1 |
+
+- Let's pretend that it was not so beautifully R ready and we needed to clean
+it a bit.
+#+BEGIN_SRC python :results output :file Dmel_25Cl_clean.tsv
+import sys
+
+toremove = ['FBgn0000022','FBgn0000253','FBgn0036608']
+
+with open('Drosophila_25_cell_lines.txt') as f:
+    sys.stdout.write('%s' % f.readline())
+    for line in f:
+        items = line.split()
+        gname = items[0]
+        if gname in toremove: continue
+        sys.stdout.write('%s' % line)
+
+        
+        
+
+ 
+#+END_SRC
+** TODO Explore the Data, Plot , statistics
+** TODO Send a report, publish, export
+* Example 3 A typical day writing a paper
+* Collaboration?
