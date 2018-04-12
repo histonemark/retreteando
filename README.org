@@ -1,5 +1,3 @@
-# retreteando
-(Really simple) Orgmode demostration in a Lab retreat
 #+TITLE: Using Emacs Orgmode as a Lab Notebook
 #+AUTHOR: Marc Corrales Berjano
 
